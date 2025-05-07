@@ -7,7 +7,7 @@ class KodiUpdater:
         self.api_url = "http://127.0.0.1:8080/jsonrpc"
         self.auth = ("kodi", "kodi")  # 修改为你的凭据
         self.marker = "#PY"
-        self.check_interval = 60  # 5分钟检测一次
+        self.check_interval = 60  
         self.last_counts = {'movie': 0, 'tvshow': 0}  # 内存存储状态
 
     def get_total_count(self, media_type):
