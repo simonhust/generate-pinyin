@@ -1,2 +1,2 @@
-# kodi-generate-pinyin
+# generate-pinyin
 自动将movie和tvshow的originaltitle字段转换为首拼字符串
