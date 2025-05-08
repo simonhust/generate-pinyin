@@ -37,7 +37,7 @@ class KodiPinyinUpdater:
         if not text:
             return ""
         initials = pinyin(text, style=Style.FIRST_LETTER)
-        return ''.join([i[0].upper() for i in initials if i]) + "#PY"
+        return ''.join([i[0].upper() for i in initials if i]) + "☆"
 
     def call_api(self, method, params):
         """API调用核心方法"""
@@ -66,7 +66,7 @@ class KodiPinyinUpdater:
             "filter": {
                 "field": "originaltitle",
                 "operator": "doesnotcontain",
-                "value": "#PY"
+                "value": "☆"
             },
             "limits": {"start": 0, "end": 1}  # 只检查是否存在至少一条记录
         }
@@ -87,7 +87,7 @@ class KodiPinyinUpdater:
             "filter": {
                 "field": "originaltitle",
                 "operator": "doesnotcontain",
-                "value": "#PY"
+                "value": "☆"
             }
         })
 
