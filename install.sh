@@ -1,11 +1,11 @@
 #!/bin/sh
-# CoreELEC 拼音生成脚本安装工具
+# CoreELEC 拼音插件依赖安装工具
 
 # 定义路径
 CONFIG_DIR="/storage/.config"
-SCRIPT_NAME="generate-pinyin.py"
-SCRIPT_PATH="$CONFIG_DIR/$SCRIPT_NAME"
-AUTOSTART_FILE="$CONFIG_DIR/autostart.sh"
+DOWNLOAD_DIR="/storage/downloads"
+PLUGIN_ZIP_URL="https://github.com/simonhust/generate-pinyin/raw/main/script.globalsearch-master.zip"
+ZIP_PATH="$DOWNLOAD_DIR/script.globalsearch-master.zip"
 
 # 1. 安装 Entware
 install_entware() {
@@ -50,58 +50,36 @@ install_pypinyin() {
     [ $? -ne 0 ] && echo "pypinyin 安装失败！" && exit 5
 }
 
-# 6. 下载脚本
-download_script() {
-    echo "下载生成脚本..."
-    wget -qO $SCRIPT_PATH https://raw.githubusercontent.com/simonhust/generate-pinyin/main/generate-pinyin.py
-    [ $? -ne 0 ] && echo "脚本下载失败！" && exit 6  # 退出码更新为6
-    
-    chmod +x $SCRIPT_PATH
-    echo "脚本已保存到：$SCRIPT_PATH"
-}
+# 6. 下载插件到下载目录
+download_plugin() {
+    echo "创建下载目录..."
+    mkdir -p $DOWNLOAD_DIR
 
-# 7. 配置自动启动
-configure_autostart() {
-    echo "配置自动启动..."
-    
-    # 创建 autostart.sh 如果不存在
-    [ ! -f "$AUTOSTART_FILE" ] && touch $AUTOSTART_FILE
-    
-    # 检查是否已存在启动命令
-    if ! grep -q "$SCRIPT_NAME" $AUTOSTART_FILE; then
-        echo "nohup python3 $SCRIPT_PATH >/dev/null 2>&1 &" >> $AUTOSTART_FILE
-        chmod +x $AUTOSTART_FILE
-        echo "自动启动配置完成"
-    else
-        echo "自动启动已配置，跳过此步骤"
-    fi
-}
+    echo "正在下载插件..."
+    wget -qO $ZIP_PATH $PLUGIN_ZIP_URL
+    [ $? -ne 0 ] && echo "插件下载失败！" && exit 6
 
-# 8. 启动脚本
-start_script() {
-    echo "启动脚本..."
-    nohup python3 $SCRIPT_PATH >/dev/null 2>&1 &
-    sleep 2
-    if pgrep -f $SCRIPT_NAME >/dev/null; then
-        echo "脚本已成功启动 (PID: $(pgrep -f $SCRIPT_NAME))"
-    else
-        echo "脚本启动失败！"
-        exit 7  # 退出码更新为7
-    fi
+    echo "-----------------------------------------------"
+    echo "插件已下载到：$ZIP_PATH"
+    echo "请按以下步骤手动安装："
+    echo "1. 进入 Kodi 主界面"
+    echo "2. 选择 插件浏览器 ➔ 从ZIP文件安装"
+    echo "3. 找到存储路径：/storage/downloads"
+    echo "4. 选择 script.globalsearch-master.zip 安装"
+    echo "-----------------------------------------------"
 }
 
 # 主安装流程
 main() {
-    echo "====== CoreELEC 拼音生成工具安装程序 ======"
+    echo "====== CoreELEC 拼音插件依赖安装程序 ======"
     install_entware
     update_opkg
     install_pip
     upgrade_pip
-    install_pypinyin  
-    download_script
-    configure_autostart
-    start_script
+    install_pypinyin
+    download_plugin
     echo "=============== 安装完成 ================="
+    echo "注意：插件需要手动安装，请按上述提示操作"
 }
 
 # 执行主程序
